@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -18,8 +19,36 @@ def home(request):
             'ingredientes': ingredientes
         })
 
+    favoritos = []
+
+    if request.user.is_authenticated:
+        favoritos = Favoritos.objects.filter(usuario=request.user)
+
+
+
+    receitas_api = []
+    busca = request.GET.get('busca')
+
+    if busca: 
+        url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={busca}"
+        response = requests.get(url)
+        resultado = response.json()
+
+        if resultado['meals']:
+            receitas_api = resultado['meals']
+        
+    return render(request, 'recipes/recipes.html', {
+        'dados': dados,
+        'favoritos': favoritos,
+        'receitas_api': receitas_api,
+        'busca': busca
+        })
+
+
+
+        
     usuario = User.objects.first()
-    favoritos = Favoritos.objects.filter(usuario=usuario)
+    
 
     return render(request, 'recipes/recipes.html', {
         'dados': dados,

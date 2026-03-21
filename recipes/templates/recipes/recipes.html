@@ -8,6 +8,36 @@
 <body>
     <h1>🍲 App de Receitas</h1>
 
+    <h2>🔎 Buscar receitas na API</h2>
+
+    <form method="get">
+        <input type="text" name="busca" placeholder="Digite o nome da receita" value="{{ busca|default:'' }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <hr>
+
+    <h2>🌐 Resultados da API</h2>
+<h2>🌐 Resultados da API</h2>
+
+{% if busca %}
+    {% if receitas_api %}
+        {% for receita_api in receitas_api %}
+            <div style="margin-bottom: 20px;">
+                <h3>{{ receita_api.strMeal }}</h3>
+                <p><strong>Categoria:</strong> {{ receita_api.strCategory }}</p>
+                <img src="{{ receita_api.strMealThumb }}" alt="{{ receita_api.strMeal }}" width="200">
+                <p>
+                    <strong>Instruções:</strong>
+                    {{ receita_api.strInstructions|truncatechars:200 }}
+                </p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>Nenhuma receita encontrada na API.</p>
+    {% endif %}
+{% endif %}
     {% if request.user.is_authenticated %}
         <p>Olá, {{ request.user.username }}!</p>
         <a href="{% url 'logout' %}">Sair</a>
