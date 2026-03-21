@@ -1,21 +1,24 @@
 from django.shortcuts import render
-from .models import Recipe, ingradiente, ReceitaIngrediente, Favoritos
+from .models import Receita, ReceitaIngrediente
 
 
 def home(request):
-    receitas = Recipe.objects.all()
+    receitas = Receita.objects.all()
 
     dados = []
     
-    for receita in Recipe.objects.all():
-        ingradientes = ReceitaIngrediente.objects.filter(receita=receita)
+    for receita in receitas:
+        ingredientes = ReceitaIngrediente.objects.filter(receita=receita)
 
         dados.append({
             'receita': receita,
-            'ingradientes': ingradientes
+            'ingredientes': ingredientes
         })
 
 
     return render(request, 'recipes/recipes.html', {'dados': dados})
+
+
+
     
 # Create your views here.
