@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +8,38 @@
 <body>
     <h1>🍲 App de Receitas</h1>
 
-    {% for item in dados %}
-        <h2>{{ item.receita.nome }}</h2>  
+    {% if request.user.is_authenticated %}
+        <p>Olá, {{ request.user.username }}!</p>
+        <a href="{% url 'logout' %}">Sair</a>
 
-        <form method="post" action="{% url 'favoritar_receita' item.receita.id %}">
-            {% csrf_token %}
-            <button type="submit">❤️ Favoritar</button>
-        </form>
+        <h2>⭐ Minhas Receitas Favoritas</h2>
+        <ul>
+            {% for fav in favoritos %}
+                <li>{{ fav.receita.nome }}</li>
+            {% empty %}
+                <li>Nenhuma receita favoritada ainda.</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>
+            <a href="{% url 'login' %}">Entrar</a> |
+            <a href="{% url 'cadastro' %}">Cadastrar</a>
+        </p>
+    {% endif %}
+
+    <hr>
+
+    {% for item in dados %}
+        <h2>{{ item.receita.nome }}</h2>
+
+        {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'favoritar_receita' item.receita.id %}">
+                {% csrf_token %}
+                <button type="submit">❤️ Favoritar</button>
+            </form>
+        {% else %}
+            <p>Faça login para favoritar.</p>
+        {% endif %}
 
         <ul>
             {% for ing in item.ingredientes %}
@@ -26,18 +51,5 @@
     {% endfor %}
 
     <p>Total de receitas: {{ dados|length }}</p>
-
-
-    <h2>⭐ Minhas Receitas Favoritas</h2>
-
-    <ul>
-        {% for fav in favoritos %}
-                <li>{{ fav.receita.nome }}</li>
-        {% empty %}
-                <li>Nenhuma receita favoritada ainda.</li>
-        {% endfor %}
-    </ul>
-
-<hr>
 </body>
 </html>
