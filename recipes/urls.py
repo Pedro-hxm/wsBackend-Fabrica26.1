@@ -7,4 +7,5 @@ urlpatterns = [
     path('cadastro/', views.cadastrar_usuario, name='cadastro'),
     path('login/', views.login_usuario, name='login'),
     path('logout/', views.logout_usuario, name='logout'),
+    path('salvar-api/<str:meal_id>/', views.salvar_receita_api, name='salvar_receita_api'),
 ]

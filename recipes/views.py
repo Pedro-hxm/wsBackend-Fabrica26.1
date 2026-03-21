@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Receita, ReceitaIngrediente, Favoritos
+from .models import Receita, ReceitaIngrediente, Favoritos, Ingrediente
 
 
 def home(request):
@@ -102,7 +102,54 @@ def favoritar_receita(request, receita_id):
 
     return redirect('home')
 
+@login_required
+def salvar_receita_api(request, meal_id):
+    url = f"https://www.themealdb.com/api/json/v1/1/lookup.php?i={meal_id}"
+    response = requests.get(url)
+    resultado = response.json()
 
+    if not resultado['meals']:
+        return redirect('home')
+
+    meal = resultado['meals'][0]
+
+    receita, criada = Receita.objects.get_or_create(
+        nome=meal['strMeal'],
+        defaults={
+            'categoria': meal['strCategory'] or 'Sem categoria',
+            'imagens': meal['strMealThumb'] or '',
+            'instrucoes': meal['strInstructions'] or ''
+        }
+    )
+
+    for i in range(1, 21):
+        nome_ingrediente = meal.get(f'strIngredient{i}')
+        medida = meal.get(f'strMeasure{i}')
+
+        if nome_ingrediente and nome_ingrediente.strip():
+            ingrediente_obj, _ = Ingrediente.objects.get_or_create(
+                nome=nome_ingrediente.strip()
+            )
+
+            quantidade = ''
+            unidade = ''
+
+            if medida and medida.strip():
+                partes = medida.strip().split(' ', 1)
+                quantidade = partes[0]
+                if len(partes) > 1:
+                    unidade = partes[1]
+
+            ReceitaIngrediente.objects.get_or_create(
+                receita=receita,
+                ingrediente=ingrediente_obj,
+                defaults={
+                    'quantidade': quantidade or '1',
+                    'unidade': unidade or 'unidade'
+                }
+            )
+
+    return redirect('home')
 
     
 # Create your views here.

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Ingredientes
-class ingrediente(models.Model):
+class Ingrediente(models.Model):
     nome = models.CharField(max_length=255)
     
     def __str__(self):
@@ -16,7 +16,7 @@ class Receita(models.Model):
     imagens = models.URLField()
     instrucoes = models.TextField()
 
-    ingradientes = models.ManyToManyField(ingrediente, through='ReceitaIngrediente')
+    ingradientes = models.ManyToManyField(Ingrediente, through='ReceitaIngrediente')
 
     def __str__(self):
         return self.nome
@@ -25,7 +25,7 @@ class Receita(models.Model):
 class ReceitaIngrediente(models.Model):
 
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE) 
-    ingrediente = models.ForeignKey(ingrediente, on_delete=models.CASCADE)
+    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     quantidade = models.CharField(max_length=100)
     unidade = models.CharField(max_length=50)
 

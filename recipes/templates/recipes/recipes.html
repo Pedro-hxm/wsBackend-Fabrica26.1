@@ -8,16 +8,15 @@
 <body>
     <h1>🍲 App de Receitas</h1>
 
-    <h2>🔎 Buscar receitas na API</h2>
+   <h2>🔎 Buscar receitas na API</h2>
 
-    <form method="get">
-        <input type="text" name="busca" placeholder="Digite o nome da receita" value="{{ busca|default:'' }}">
-        <button type="submit">Buscar</button>
-    </form>
+<form method="get">
+    <input type="text" name="busca" placeholder="Digite o nome da receita" value="{{ busca|default:'' }}">
+    <button type="submit">Buscar</button>
+</form>
 
-    <hr>
+<hr>
 
-    <h2>🌐 Resultados da API</h2>
 <h2>🌐 Resultados da API</h2>
 
 {% if busca %}
@@ -28,9 +27,18 @@
                 <p><strong>Categoria:</strong> {{ receita_api.strCategory }}</p>
                 <img src="{{ receita_api.strMealThumb }}" alt="{{ receita_api.strMeal }}" width="200">
                 <p>
-                    <strong>Instruções:</strong>
+                    <strong>Modo de preparo:</strong>
                     {{ receita_api.strInstructions|truncatechars:200 }}
                 </p>
+
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'salvar_receita_api' receita_api.idMeal %}">
+                        {% csrf_token %}
+                        <button type="submit">💾 Salvar no sistema</button>
+                    </form>
+                {% else %}
+                    <p>Faça login para salvar receitas no sistema.</p>
+                {% endif %}
             </div>
             <hr>
         {% endfor %}
@@ -38,6 +46,7 @@
         <p>Nenhuma receita encontrada na API.</p>
     {% endif %}
 {% endif %}
+
     {% if request.user.is_authenticated %}
         <p>Olá, {{ request.user.username }}!</p>
         <a href="{% url 'logout' %}">Sair</a>
