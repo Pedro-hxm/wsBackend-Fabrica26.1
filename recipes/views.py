@@ -47,12 +47,12 @@ def home(request):
 
 
         
-    usuario = User.objects.first()
+    # usuario = User.objects.first()
     
 
-    return render(request, 'recipes/recipes.html', {
-        'dados': dados,
-        'favoritos': favoritos})
+    # return render(request, 'recipes/recipes.html', {
+    #     'dados': dados,
+    #     'favoritos': favoritos})
 
 
 
@@ -98,7 +98,7 @@ def favoritar_receita(request, receita_id):
 
     receita = get_object_or_404(Receita, id=receita_id)
 
-    Favoritos.objects.get_or_create(usuario=usuario, receita=receita)
+    Favoritos.objects.get_or_create(usuario=request.user, receita=receita)
 
     return redirect('home')
 
