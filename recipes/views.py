@@ -18,8 +18,13 @@ def home(request):
             'ingredientes': ingredientes
         })
 
+    usuario = User.objects.first()
+    favoritos = Favoritos.objects.filter(usuario=usuario)
 
-    return render(request, 'recipes/recipes.html', {'dados': dados})
+    return render(request, 'recipes/recipes.html', {
+        'dados': dados,
+        'favoritos': favoritos})
+    
 
 def favoritar_receita(request, receita_id):
 

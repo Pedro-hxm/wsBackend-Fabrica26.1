@@ -26,5 +26,18 @@
     {% endfor %}
 
     <p>Total de receitas: {{ dados|length }}</p>
+
+
+    <h2>⭐ Minhas Receitas Favoritas</h2>
+
+    <ul>
+        {% for fav in favoritos %}
+                <li>{{ fav.receita.nome }}</li>
+        {% empty %}
+                <li>Nenhuma receita favoritada ainda.</li>
+        {% endfor %}
+    </ul>
+
+<hr>
 </body>
 </html>
