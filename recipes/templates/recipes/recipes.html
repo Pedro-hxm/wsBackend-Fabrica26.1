@@ -1,99 +1,346 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receitas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe Book App| Home</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a43c12",
+                        secondary: "#416743",
+                        background: "#fafaf5",
+                        surface: "#ffffff",
+                        muted: "#6b7280",
+                        borderc: "#e5d4cc",
+                        soft: "#f4f4ef",
+                    },
+                    fontFamily: {
+                        headline: ["Plus Jakarta Sans", "sans-serif"],
+                        body: ["Be Vietnam Pro", "sans-serif"],
+                    },
+                    borderRadius: {
+                        xl: "1rem",
+                        "2xl": "1.5rem",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gradient {
+            background: linear-gradient(135deg, #a43c12 0%, #ff7f50 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
 </head>
-<body>
-    <h1>🍲 App de Receitas</h1>
+<body class="bg-background text-gray-900 font-body">
 
-   <h2>🔎 Buscar receitas na API</h2>
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-background/90 backdrop-blur border-b border-borderc">
+        <nav class="max-w-7xl mx-auto h-20 px-6 flex items-center justify-between">
+            <div class="text-2xl font-headline font-extrabold text-primary">
+                🍲 Recipe Book App
 
-<form method="get">
-    <input type="text" name="busca" placeholder="Digite o nome da receita" value="{{ busca|default:'' }}">
-    <button type="submit">Buscar</button>
-</form>
+            </div>
 
-<hr>
-
-{% if request.user.is_authenticated %}
-    <p><a href="{% url 'criar_receita' %}">➕ Criar Receita</a></p>
-    <p><a href="{% url 'gerenciar_receitas' %}">📋 Gerenciar Receitas</a></p>
-{% endif %}
-
-<h2>🌐 Resultados da API</h2>
-
-{% if busca %}
-    {% if receitas_api %}
-        {% for receita_api in receitas_api %}
-            <div style="margin-bottom: 20px;">
-                <h3>{{ receita_api.strMeal }}</h3>
-                <p><strong>Categoria:</strong> {{ receita_api.strCategory }}</p>
-                <img src="{{ receita_api.strMealThumb }}" alt="{{ receita_api.strMeal }}" width="200">
-                <p>
-                    <strong>Modo de preparo:</strong>
-                    {{ receita_api.strInstructions|truncatechars:200 }}
-                </p>
-
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="#" class="text-primary border-b-2 border-primary pb-1">Home</a>
+                <a href="#buscar" class="hover:text-primary transition">Buscar</a>
+                <a href="#api" class="hover:text-primary transition">API</a>
+                <a href="#receitas" class="hover:text-primary transition">Receitas</a>
                 {% if request.user.is_authenticated %}
-                    <form method="post" action="{% url 'salvar_receita_api' receita_api.idMeal %}">
-                        {% csrf_token %}
-                        <button type="submit">💾 Salvar no sistema</button>
-                    </form>
-                {% else %}
-                    <p>Faça login para salvar receitas no sistema.</p>
+                    <a href="#favoritos" class="hover:text-primary transition">Favoritos</a>
                 {% endif %}
             </div>
-            <hr>
-        {% endfor %}
-    {% else %}
-        <p>Nenhuma receita encontrada na API.</p>
-    {% endif %}
-{% endif %}
 
-    {% if request.user.is_authenticated %}
-        <p>Olá, {{ request.user.username }}!</p>
-        <a href="{% url 'logout' %}">Sair</a>
+            <div class="flex items-center gap-3">
+                {% if request.user.is_authenticated %}
+                    <span class="hidden sm:block text-sm text-muted">
+                        Olá, <strong>{{ request.user.username }}</strong>
+                    </span>
+                    <a href="{% url 'logout' %}" class="px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition">
+                        Sair
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="px-4 py-2 rounded-full border border-borderc text-sm font-semibold hover:bg-white transition">
+                        Entrar
+                    </a>
+                    <a href="{% url 'cadastro' %}" class="px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold hover:opacity-90 transition">
+                        Cadastrar
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
 
-        <h2>⭐ Minhas Receitas Favoritas</h2>
-        <ul>
-            {% for fav in favoritos %}
-                <li>{{ fav.receita.nome }}</li>
-            {% empty %}
-                <li>Nenhuma receita favoritada ainda.</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>
-            <a href="{% url 'login' %}">Entrar</a> |
-            <a href="{% url 'cadastro' %}">Cadastrar</a>
-        </p>
-    {% endif %}
+    <main class="pt-20">
 
-    <hr>
+        <!-- HERO -->
+        <section class="relative min-h-[70vh] flex items-center overflow-hidden">
+            <div class="absolute inset-0">
+                <img
+                    src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1600&q=80"
+                    alt="Receitas"
+                    class="w-full h-full object-cover"
+                >
+                <div class="absolute inset-0 bg-black/45"></div>
+            </div>
 
-    {% for item in dados %}
-        <h2>{{ item.receita.nome }}</h2>
+            <div class="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full">
+                <div class="max-w-3xl">
+                    <span class="inline-block uppercase tracking-[0.25em] text-orange-200 text-sm font-semibold mb-4">
+                        Receitas, favoritos e descobertas
+                    </span>
+                    <h1 class="font-headline text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                        Descubra, salve e favorite suas receitas em um só lugar
+                    </h1>
+                    <p class="text-white/85 text-lg mb-8 max-w-2xl">
+                        Pesquise receitas na API, salve no sistema e organize seus pratos favoritos com uma interface moderna e prática.
+                    </p>
 
-        {% if request.user.is_authenticated %}
-            <form method="post" action="{% url 'favoritar_receita' item.receita.id %}">
-                {% csrf_token %}
-                <button type="submit">❤️ Favoritar</button>
-            </form>
-        {% else %}
-            <p>Faça login para favoritar.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#buscar" class="editorial-gradient text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:scale-[1.02] transition">
+                            Explorar receitas
+                        </a>
+                        <a href="#receitas" class="bg-white/10 border border-white/20 text-white px-8 py-4 rounded-2xl font-semibold glass-effect hover:bg-white/20 transition">
+                            Ver receitas do sistema
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BUSCA -->
+        <section id="buscar" class="py-16 bg-soft border-y border-borderc">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="text-center mb-10">
+                    <h2 class="font-headline text-3xl md:text-4xl font-extrabold text-gray-900">
+                        🔎 Buscar receitas na API
+                    </h2>
+                    <p class="text-muted mt-3">
+                        Digite o nome de uma receita e veja os resultados encontrados.
+                    </p>
+                </div>
+
+                <form method="get" class="bg-white rounded-2xl shadow-sm border border-borderc p-4 md:p-5 flex flex-col md:flex-row gap-4">
+                    <input
+                        type="text"
+                        name="busca"
+                        placeholder="Digite o nome da receita"
+                        value="{{ busca|default:'' }}"
+                        class="flex-1 rounded-xl border-gray-300 focus:border-primary focus:ring-primary"
+                    >
+                    <button
+                        type="submit"
+                        class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:opacity-90 transition"
+                    >
+                        Buscar
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- RESULTADOS API -->
+        {% if busca %}
+        <section id="api" class="py-16">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="mb-10">
+                    <h2 class="font-headline text-3xl md:text-4xl font-extrabold">🌐 Resultados da API</h2>
+                    <p class="text-muted mt-2">
+                        Resultado da busca por: <strong>{{ busca }}</strong>
+                    </p>
+                </div>
+
+                {% if receitas_api %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {% for receita_api in receitas_api %}
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-borderc hover:shadow-lg transition">
+                                <img
+                                    src="{{ receita_api.strMealThumb }}"
+                                    alt="{{ receita_api.strMeal }}"
+                                    class="w-full h-60 object-cover"
+                                >
+
+                                <div class="p-6">
+                                    <div class="flex items-center justify-between gap-3 mb-3">
+                                        <h3 class="font-headline text-2xl font-bold leading-tight">
+                                            {{ receita_api.strMeal }}
+                                        </h3>
+                                    </div>
+
+                                    <p class="text-sm text-muted mb-4">
+                                        <strong>Categoria:</strong> {{ receita_api.strCategory }}
+                                    </p>
+
+                                    <p class="text-gray-700 text-sm leading-6 mb-5">
+                                        {{ receita_api.strInstructions|truncatechars:200 }}
+                                    </p>
+
+                                    {% if request.user.is_authenticated %}
+                                        <form method="post" action="{% url 'salvar_receita_api' receita_api.idMeal %}">
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="w-full rounded-xl bg-secondary text-white px-4 py-3 font-semibold hover:opacity-90 transition"
+                                            >
+                                                💾 Salvar no sistema
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="rounded-xl bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 text-sm">
+                                            Faça login para salvar receitas no sistema.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-white border border-borderc rounded-2xl p-8 text-center text-muted shadow-sm">
+                        Nenhuma receita encontrada na API.
+                    </div>
+                {% endif %}
+            </div>
+        </section>
         {% endif %}
 
-        <ul>
-            {% for ing in item.ingredientes %}
-                <li>
-                    {{ ing.quantidade }} {{ ing.unidade }} de {{ ing.ingrediente.nome }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+        <!-- FAVORITOS -->
+        {% if request.user.is_authenticated %}
+        <section id="favoritos" class="py-16 bg-soft border-y border-borderc">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="mb-10">
+                    <h2 class="font-headline text-3xl md:text-4xl font-extrabold">⭐ Minhas Receitas Favoritas</h2>
+                    <p class="text-muted mt-2">
+                        Veja rapidamente as receitas que você marcou como favoritas.
+                    </p>
+                </div>
 
-    <p>Total de receitas: {{ dados|length }}</p>
+                {% if favoritos %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {% for fav in favoritos %}
+                            <div class="bg-white rounded-2xl p-6 border border-borderc shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">❤️</span>
+                                    <div>
+                                        <h3 class="font-headline text-xl font-bold">{{ fav.receita.nome }}</h3>
+                                        <p class="text-sm text-muted">Receita favoritada</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-white rounded-2xl p-8 border border-borderc text-muted shadow-sm">
+                        Nenhuma receita favoritada ainda.
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- RECEITAS DO SISTEMA -->
+        <section id="receitas" class="py-16">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                    <div>
+                        <h2 class="font-headline text-3xl md:text-4xl font-extrabold">
+                            📚 Receitas do Sistema
+                        </h2>
+                        <p class="text-muted mt-2">
+                            Total de receitas cadastradas: <strong>{{ dados|length }}</strong>
+                        </p>
+                    </div>
+                </div>
+
+                {% if dados %}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {% for item in dados %}
+                            <div class="bg-white rounded-2xl border border-borderc shadow-sm overflow-hidden">
+                                <div class="p-6 border-b border-borderc">
+                                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                                        <div>
+                                            <h3 class="font-headline text-2xl font-bold mb-2">
+                                                {{ item.receita.nome }}
+                                            </h3>
+                                            <p class="text-sm text-muted">
+                                                Receita cadastrada no sistema
+                                            </p>
+                                        </div>
+
+                                        {% if request.user.is_authenticated %}
+                                            <form method="post" action="{% url 'favoritar_receita' item.receita.id %}">
+                                                {% csrf_token %}
+                                                <button
+                                                    type="submit"
+                                                    class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:opacity-90 transition whitespace-nowrap"
+                                                >
+                                                    ❤️ Favoritar
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-sm text-muted">
+                                                Faça login para favoritar.
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="p-6">
+                                    <h4 class="font-semibold text-lg mb-4">Ingredientes</h4>
+
+                                    {% if item.ingredientes %}
+                                        <ul class="space-y-3">
+                                            {% for ing in item.ingredientes %}
+                                                <li class="flex items-start gap-3 text-gray-700">
+                                                    <span class="mt-1 text-primary">•</span>
+                                                    <span>
+                                                        {{ ing.quantidade }} {{ ing.unidade }} de {{ ing.ingrediente.nome }}
+                                                    </span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted">Nenhum ingrediente cadastrado para esta receita.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-white border border-borderc rounded-2xl p-8 text-center text-muted shadow-sm">
+                        Nenhuma receita cadastrada no sistema.
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- RODAPÉ -->
+        <footer class="bg-soft border-t border-borderc py-10">
+            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="font-headline text-xl font-bold text-primary">Recipe Book App</h3>
+                    <p class="text-sm text-muted">Sua cozinha organizada de forma moderna.</p>
+                </div>
+                <div class="text-sm text-muted">
+                    © 2026 - Projeto Django - Desenvolvido por Pedro Henrique. Todos os direitos reservados.
+                </div>
+            </div>
+        </footer>
+    </main>
 </body>
 </html>
