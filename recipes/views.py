@@ -246,5 +246,14 @@ def editar_receita(request, receita_id):
         'ingredientes_preenchidos': ingredientes_preenchidos
     })
 
+@login_required
+def excluir_receita(request, receita_id):
+    receita = get_object_or_404(Receita, id=receita_id)
+
+    if request.method == 'POST':
+        receita.delete()
+        return redirect('gerenciar_receitas')
+
+    return render(request, 'recipes/excluir_receita.html', {'receita': receita})
 
 # Create your views here.
