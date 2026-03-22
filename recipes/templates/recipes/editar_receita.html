@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Receita</title>
+</head>
+<body>
+    <h1>✏️ Editar Receita</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Nome da receita:</label>
+        <input type="text" name="nome" value="{{ receita.nome }}" required>
+        <br><br>
+
+        <label>Categoria:</label>
+        <input type="text" name="categoria" value="{{ receita.categoria }}" required>
+        <br><br>
+
+        <label>Imagem (URL):</label>
+        <input type="url" name="imagens" value="{{ receita.imagens }}" required>
+        <br><br>
+
+        <label>Instruções:</label>
+        <textarea name="instrucoes" required>{{ receita.instrucoes }}</textarea>
+        <br><br>
+
+        <h2>Ingredientes</h2>
+
+        <h3>Ingrediente 1</h3>
+        <input type="text" name="ingrediente_1" placeholder="Nome do ingrediente" value="{{ ingredientes_preenchidos.0.nome }}">
+        <input type="text" name="quantidade_1" placeholder="Quantidade" value="{{ ingredientes_preenchidos.0.quantidade }}">
+        <input type="text" name="unidade_1" placeholder="Unidade" value="{{ ingredientes_preenchidos.0.unidade }}">
+        <br><br>
+
+        <h3>Ingrediente 2</h3>
+        <input type="text" name="ingrediente_2" placeholder="Nome do ingrediente" value="{{ ingredientes_preenchidos.1.nome }}">
+        <input type="text" name="quantidade_2" placeholder="Quantidade" value="{{ ingredientes_preenchidos.1.quantidade }}">
+        <input type="text" name="unidade_2" placeholder="Unidade" value="{{ ingredientes_preenchidos.1.unidade }}">
+        <br><br>
+
+        <h3>Ingrediente 3</h3>
+        <input type="text" name="ingrediente_3" placeholder="Nome do ingrediente" value="{{ ingredientes_preenchidos.2.nome }}">
+        <input type="text" name="quantidade_3" placeholder="Quantidade" value="{{ ingredientes_preenchidos.2.quantidade }}">
+        <input type="text" name="unidade_3" placeholder="Unidade" value="{{ ingredientes_preenchidos.2.unidade }}">
+        <br><br>
+
+        <button type="submit">Salvar Alterações</button>
+    </form>
+
+    <br>
+    <a href="{% url 'gerenciar_receitas' %}">Voltar para gerenciamento</a>
+</body>
+</html>
+

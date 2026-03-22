@@ -16,6 +16,7 @@
         {% for receita in receitas %}
             <li>
                 <strong>{{ receita.nome }}</strong> - {{ receita.categoria }}
+                | <a href="{% url 'editar_receita' receita.id %}">Editar</a>
             </li>
         {% empty %}
             <li>Nenhuma receita cadastrada ainda.</li>

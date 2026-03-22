@@ -192,5 +192,59 @@ def gerenciar_receitas(request):
     receitas = Receita.objects.all()
     return render(request, 'recipes/gerenciar_receitas.html', {'receitas': receitas})
 
+@login_required
+def editar_receita(request, receita_id):
+    receita = get_object_or_404(Receita, id=receita_id)
+    receita_ingredientes = ReceitaIngrediente.objects.filter(receita=receita)
+
+    if request.method == 'POST':
+        receita.nome = request.POST.get('nome')
+        receita.categoria = request.POST.get('categoria')
+        receita.imagens = request.POST.get('imagens')
+        receita.instrucoes = request.POST.get('instrucoes')
+        receita.save()
+
+        ReceitaIngrediente.objects.filter(receita=receita).delete()
+
+        for i in range(1, 4):
+            nome_ingrediente = request.POST.get(f'ingrediente_{i}')
+            quantidade = request.POST.get(f'quantidade_{i}')
+            unidade = request.POST.get(f'unidade_{i}')
+
+            if nome_ingrediente and nome_ingrediente.strip():
+                ingrediente_obj, _ = Ingrediente.objects.get_or_create(
+                    nome=nome_ingrediente.strip()
+                )
+
+                ReceitaIngrediente.objects.create(
+                    receita=receita,
+                    ingrediente=ingrediente_obj,
+                    quantidade=quantidade if quantidade else '1',
+                    unidade=unidade if unidade else 'unidade'
+                )
+
+        return redirect('gerenciar_receitas')
+
+    ingredientes_preenchidos = []
+
+    for item in receita_ingredientes:
+        ingredientes_preenchidos.append({
+            'nome': item.ingrediente.nome,
+            'quantidade': item.quantidade,
+            'unidade': item.unidade
+        })
+
+    while len(ingredientes_preenchidos) < 3:
+        ingredientes_preenchidos.append({
+            'nome': '',
+            'quantidade': '',
+            'unidade': ''
+        })
+
+    return render(request, 'recipes/editar_receita.html', {
+        'receita': receita,
+        'ingredientes_preenchidos': ingredientes_preenchidos
+    })
+
 
 # Create your views here.

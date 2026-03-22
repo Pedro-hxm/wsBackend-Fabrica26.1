@@ -11,4 +11,5 @@ urlpatterns = [
 
     path('receitas/criar/', views.criar_receita, name='criar_receita'),
     path('receitas/gerenciar/', views.gerenciar_receitas, name='gerenciar_receitas'),
+    path('receitas/<int:receita_id>/editar/', views.editar_receita, name='editar_receita'),
 ]
