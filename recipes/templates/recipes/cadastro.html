@@ -1,32 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cadastro | Recipe Book App</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a43c12",
+                        secondary: "#416743",
+                        background: "#fafaf5",
+                        soft: "#f4f4ef",
+                        errorBg: "#ffdad6",
+                        errorText: "#93000a",
+                    },
+                    fontFamily: {
+                        headline: ["Plus Jakarta Sans"],
+                        body: ["Be Vietnam Pro"],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .editorial-gradient {
+            background: linear-gradient(135deg, #a43c12 0%, #ff7f50 100%);
+        }
+    </style>
 </head>
-<body>
-    <h1>Cadastrar usuário</h1>
 
-    {% if erro %}
-        <p>{{ erro }}</p>
-    {% endif %}
+<body class="bg-background font-body text-gray-900">
 
-    <form method="post">
-        {% csrf_token %}
-        <label>Usuário:</label>
-        <input type="text" name="username" required>
+<main class="min-h-screen flex flex-col md:flex-row">
 
-        <br><br>
+    <!-- LADO ESQUERDO (IMAGEM) -->
+    <section class="hidden md:flex md:w-1/2 relative overflow-hidden">
+        <img
+            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061"
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+        <div class="absolute inset-0 bg-black/40"></div>
 
-        <label>Senha:</label>
-        <input type="password" name="password" required>
+        <div class="relative z-10 p-12 flex flex-col justify-end text-white">
+            <h1 class="text-5xl font-headline font-extrabold mb-4">
+                Recipe Book App
+            </h1>
+            <p class="text-lg">
+                Crie sua conta e comece a salvar suas receitas favoritas.
+            </p>
+        </div>
+    </section>
 
-        <br><br>
+    <!-- LADO DIREITO (FORMULÁRIO) -->
+    <section class="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+        <div class="w-full max-w-md">
 
-        <button type="submit">Cadastrar</button>
-    </form>
+            <!-- TÍTULO -->
+            <h2 class="text-4xl font-headline font-extrabold mb-2">
+                Criar Conta
+            </h2>
+            <p class="text-gray-500 mb-8">
+                Comece sua jornada culinária 🍲
+            </p>
 
-    <p>Já tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+            <!-- ERRO -->
+            {% if erro %}
+                <div class="mb-6 p-4 rounded-xl bg-errorBg text-errorText">
+                    {{ erro }}
+                </div>
+            {% endif %}
+
+            <!-- FORM -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- USUÁRIO -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Usuário</label>
+                    <input
+                        type="text"
+                        name="username"
+                        required
+                        class="w-full p-4 rounded-xl bg-soft focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="Digite seu usuário"
+                    >
+                </div>
+
+                <!-- SENHA -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Senha</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            required
+                            class="w-full p-4 rounded-xl bg-soft focus:ring-2 focus:ring-primary outline-none"
+                            placeholder="Digite sua senha"
+                        >
+                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-4 text-gray-500">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BOTÃO -->
+                <button
+                    type="submit"
+                    class="w-full py-4 editorial-gradient text-white font-bold rounded-xl hover:opacity-90 transition"
+                >
+                    Cadastrar
+                </button>
+            </form>
+
+            <!-- LINK LOGIN -->
+            <p class="mt-8 text-center text-gray-600">
+                Já tem conta?
+                <a href="{% url 'login' %}" class="text-primary font-bold hover:underline">
+                    Entrar
+                </a>
+            </p>
+
+            <!-- VOLTAR -->
+            <div class="mt-6 text-center">
+                <a href="{% url 'home' %}" class="text-sm text-gray-500 hover:text-primary">
+                    ← Voltar para home
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+function togglePassword() {
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
 </body>
 </html>
