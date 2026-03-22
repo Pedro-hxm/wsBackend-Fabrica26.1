@@ -1,32 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | Recipe Book App</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#a43c12",
+                        primaryContainer: "#ff7f50",
+                        secondary: "#416743",
+                        background: "#fafaf5",
+                        surface: "#fafaf5",
+                        card: "#ffffff",
+                        muted: "#57423b",
+                        outline: "#8b7169",
+                        outlineVariant: "#dec0b6",
+                        soft: "#f4f4ef",
+                        errorBg: "#ffdad6",
+                        errorText: "#93000a",
+                    },
+                    fontFamily: {
+                        headline: ["Plus Jakarta Sans", "sans-serif"],
+                        body: ["Be Vietnam Pro", "sans-serif"],
+                    },
+                    borderRadius: {
+                        xl: "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gradient {
+            background: linear-gradient(180deg, rgba(26, 28, 25, 0) 0%, rgba(26, 28, 25, 0.45) 100%);
+        }
+    </style>
 </head>
-<body>
-    <h1>Login</h1>
+<body class="bg-surface text-gray-900 font-body selection:bg-orange-200 selection:text-gray-900">
 
-    {% if erro %}
-        <p>{{ erro }}</p>
-    {% endif %}
+<main class="min-h-screen flex flex-col md:flex-row">
+    
+    <!-- LADO ESQUERDO -->
+    <section class="relative hidden md:flex md:w-1/2 lg:w-3/5 xl:w-2/3 h-screen sticky top-0 overflow-hidden bg-soft">
+        <img
+            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1400&q=80"
+            alt="Cozinha gourmet com ingredientes frescos"
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+        <div class="absolute inset-0 editorial-gradient"></div>
 
-    <form method="post">
-        {% csrf_token %}
-        <label>Usuário:</label>
-        <input type="text" name="username" required>
+        <div class="absolute bottom-16 left-16 z-10">
+            <h1 class="font-headline font-extrabold text-5xl lg:text-7xl text-white tracking-tight mb-4">
+                Bem-vindo ao Recipe Book App
+            </h1>
+            <p class="font-body text-xl text-white/90 max-w-md font-medium">
+                Entre na sua conta e continue sua jornada culinária com receitas, favoritos e descobertas incríveis.
+            </p>
+        </div>
 
-        <br><br>
+        <div class="absolute top-20 right-10 z-20 hidden lg:block -mr-8">
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-white/20">
+                <img
+                    src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80"
+                    alt="Prato gourmet"
+                    class="w-48 h-64 object-cover rounded-xl shadow-lg -mt-12 -mr-12 border-4 border-white"
+                >
+            </div>
+        </div>
+    </section>
 
-        <label>Senha:</label>
-        <input type="password" name="password" required>
+    <!-- LADO DIREITO -->
+    <section class="flex-1 flex flex-col justify-center items-center px-6 py-12 md:px-12 lg:px-24 bg-white relative z-10 min-h-screen">
+        <div class="w-full max-w-md">
 
-        <br><br>
+            <!-- LOGO MOBILE -->
+            <div class="md:hidden mb-12 flex justify-center">
+                <span class="font-headline font-extrabold text-3xl text-primary tracking-tight">
+                    App de Receitas
+                </span>
+            </div>
 
-        <button type="submit">Entrar</button>
-    </form>
+            <!-- CABEÇALHO -->
+            <header class="mb-10 text-center md:text-left">
+                <h2 class="font-headline font-bold text-4xl text-gray-900 tracking-tight mb-2">
+                    Bem-vindo de volta
+                </h2>
+                <p class="text-muted font-medium">
+                    Faça login para acessar suas receitas favoritas.
+                </p>
+            </header>
 
-    <p>Não tem conta? <a href="{% url 'cadastro' %}">Cadastrar</a></p>
+            <!-- ERRO -->
+            {% if erro %}
+                <div class="mb-6 rounded-2xl border border-red-200 bg-errorBg px-4 py-3 text-sm font-medium text-errorText">
+                    {{ erro }}
+                </div>
+            {% endif %}
+
+            <!-- FORM -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div class="space-y-2">
+                    <label for="username" class="block text-xs font-semibold uppercase tracking-widest text-outline">
+                        Usuário
+                    </label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        required
+                        placeholder="Digite seu usuário"
+                        class="w-full px-4 py-4 bg-soft border-none rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium text-gray-900 placeholder:text-gray-400"
+                    >
+                </div>
+
+                <div class="space-y-2">
+                    <label for="password" class="block text-xs font-semibold uppercase tracking-widest text-outline">
+                        Senha
+                    </label>
+                    <div class="relative">
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                            placeholder="••••••••"
+                            class="w-full px-4 py-4 pr-12 bg-soft border-none rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium text-gray-900 placeholder:text-gray-400"
+                        >
+                        <button
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors"
+                        >
+                            <span id="eyeIcon" class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-primary to-primaryContainer text-white font-headline font-bold rounded-2xl shadow-[0_10px_20px_rgba(164,60,18,0.15)] hover:scale-[0.98] active:scale-[0.95] transition-all duration-200"
+                >
+                    Entrar
+                </button>
+            </form>
+
+            <!-- DIVISOR -->
+            <div class="relative my-10">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-outlineVariant/50"></div>
+                </div>
+                <div class="relative flex justify-center text-xs uppercase tracking-widest">
+                    <span class="bg-white px-4 text-outline font-bold">Acesse sua conta</span>
+                </div>
+            </div>
+
+            <!-- RODAPÉ -->
+            <p class="text-center text-muted font-medium">
+                Não tem conta?
+                <a href="{% url 'cadastro' %}" class="text-primary font-bold hover:underline underline-offset-4 ml-1">
+                    Cadastrar
+                </a>
+            </p>
+
+            <div class="mt-8 text-center">
+                <a href="{% url 'home' %}" class="text-sm text-outline hover:text-primary transition">
+                    ← Voltar para a página inicial
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 right-0 w-32 h-32 bg-green-100/40 rounded-tl-full -z-10"></div>
+    </section>
+</main>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.textContent = "visibility_off";
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.textContent = "visibility";
+        }
+    }
+</script>
+
 </body>
 </html>
