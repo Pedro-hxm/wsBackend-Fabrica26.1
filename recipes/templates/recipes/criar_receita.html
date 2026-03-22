@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Receita</title>
+</head>
+<body>
+    <h1>➕ Criar Receita</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Nome da receita:</label>
+        <input type="text" name="nome" required>
+        <br><br>
+
+        <label>Categoria:</label>
+        <input type="text" name="categoria" required>
+        <br><br>
+
+        <label>Imagem (URL):</label>
+        <input type="url" name="imagens" required>
+        <br><br>
+
+        <label>Instruções:</label>
+        <textarea name="instrucoes" required></textarea>
+        <br><br>
+
+        <h2>Ingredientes</h2>
+
+        <h3>Ingrediente 1</h3>
+        <input type="text" name="ingrediente_1" placeholder="Nome do ingrediente">
+        <input type="text" name="quantidade_1" placeholder="Quantidade">
+        <input type="text" name="unidade_1" placeholder="Unidade">
+        <br><br>
+
+        <h3>Ingrediente 2</h3>
+        <input type="text" name="ingrediente_2" placeholder="Nome do ingrediente">
+        <input type="text" name="quantidade_2" placeholder="Quantidade">
+        <input type="text" name="unidade_2" placeholder="Unidade">
+        <br><br>
+
+        <h3>Ingrediente 3</h3>
+        <input type="text" name="ingrediente_3" placeholder="Nome do ingrediente">
+        <input type="text" name="quantidade_3" placeholder="Quantidade">
+        <input type="text" name="unidade_3" placeholder="Unidade">
+        <br><br>
+
+        <button type="submit">Salvar Receita</button>
+    </form>
+
+    <br>
+    <a href="{% url 'gerenciar_receitas' %}">Voltar para gerenciamento</a>
+</body>
+</html>

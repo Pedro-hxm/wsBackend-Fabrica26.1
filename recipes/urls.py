@@ -8,4 +8,7 @@ urlpatterns = [
     path('login/', views.login_usuario, name='login'),
     path('logout/', views.logout_usuario, name='logout'),
     path('salvar-api/<str:meal_id>/', views.salvar_receita_api, name='salvar_receita_api'),
+
+    path('receitas/criar/', views.criar_receita, name='criar_receita'),
+    path('receitas/gerenciar/', views.gerenciar_receitas, name='gerenciar_receitas'),
 ]

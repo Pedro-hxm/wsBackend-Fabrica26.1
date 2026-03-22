@@ -151,5 +151,46 @@ def salvar_receita_api(request, meal_id):
 
     return redirect('home')
 
-    
+@login_required
+def criar_receita(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        categoria = request.POST.get('categoria')
+        imagens = request.POST.get('imagens')
+        instrucoes = request.POST.get('instrucoes')
+
+        receita = Receita.objects.create(
+            nome=nome,
+            categoria=categoria,
+            imagens=imagens,
+            instrucoes=instrucoes
+        )
+
+        for i in range(1, 4):
+            nome_ingrediente = request.POST.get(f'ingrediente_{i}')
+            quantidade = request.POST.get(f'quantidade_{i}')
+            unidade = request.POST.get(f'unidade_{i}')
+
+            if nome_ingrediente and nome_ingrediente.strip():
+                ingrediente_obj, _ = Ingrediente.objects.get_or_create(
+                    nome=nome_ingrediente.strip()
+                )
+
+                ReceitaIngrediente.objects.create(
+                    receita=receita,
+                    ingrediente=ingrediente_obj,
+                    quantidade=quantidade if quantidade else '1',
+                    unidade=unidade if unidade else 'unidade'
+                )
+
+        return redirect('gerenciar_receitas')
+
+    return render(request, 'recipes/criar_receita.html')    
+
+@login_required
+def gerenciar_receitas(request):
+    receitas = Receita.objects.all()
+    return render(request, 'recipes/gerenciar_receitas.html', {'receitas': receitas})
+
+
 # Create your views here.

@@ -17,6 +17,11 @@
 
 <hr>
 
+{% if request.user.is_authenticated %}
+    <p><a href="{% url 'criar_receita' %}">➕ Criar Receita</a></p>
+    <p><a href="{% url 'gerenciar_receitas' %}">📋 Gerenciar Receitas</a></p>
+{% endif %}
+
 <h2>🌐 Resultados da API</h2>
 
 {% if busca %}
